@@ -46,8 +46,15 @@ cargo test --release --workspace --all-features
 .venv/bin/ruff format --check python
 ```
 
-There is no CI configuration and no Python test suite in this tree. `cargo test`
-is the whole automated check.
+There is no Python test suite in this tree. `cargo test` is the whole automated
+check of behavior, and `.github/workflows/checks.yml` runs the commands above on
+every push and again before any release is built.
+
+Releases are cut by hand from `.github/workflows/release.yml`, which reads the
+version out of `Cargo.toml` rather than writing it. Bump the version in a commit
+first, then dispatch the workflow with the same string; it refuses to build if
+the two disagree, so a published artifact always corresponds to a reviewed
+commit.
 
 ## Things that are settled
 

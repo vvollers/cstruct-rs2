@@ -50,10 +50,45 @@ express that CPU floor, so the package checks the processor before loading the
 native extension. An older or unverifiable machine gets an `ImportError`
 instead of an illegal-instruction crash.
 
+## Install from a release
+
+Each release carries a wheel, a source distribution and a `SHA256SUMS` file,
+built from the tagged commit by `.github/workflows/release.yml`.
+
+```bash
+gh release download --repo vvollers/cstruct-rs2 \
+  --pattern '*.whl' --pattern 'SHA256SUMS'
+
+sha256sum --check --ignore-missing SHA256SUMS
+```
+
+`gh` is used rather than a download URL because a release tag contains a `+`,
+which a link has to percent-encode.
+
+Releases also carry a GitHub build attestation, which ties the file to the
+workflow run and the commit that produced it:
+
+```bash
+gh attestation verify dissect_cstruct-*.whl --repo vvollers/cstruct-rs2
+```
+
+Then install the wheel over whatever `dissect.cstruct` the target environment
+has:
+
+```bash
+/path/to/dissect-env/bin/python -m pip install \
+  --force-reinstall --no-deps dissect_cstruct-*.whl
+```
+
+Release wheels are built inside a `manylinux_2_28` image, so they need glibc
+2.28 or newer — RHEL 8, Debian 10, Ubuntu 18.10. That floor is separate from the
+CPU floor above, which the package checks at import.
+
 ## Build a wheel
 
-Install CPython 3.13 and a Rust toolchain. The repository pins the required
-Rust version in `rust-toolchain.toml`.
+Building from source is the alternative to a release download; the result is the
+same artifact. Install CPython 3.13 and a Rust toolchain. The repository pins
+the required Rust version in `rust-toolchain.toml`.
 
 From this directory:
 
@@ -164,6 +199,13 @@ line, but the behavior is validated against upstream's development source, and
 [COMPATIBILITY.md](COMPATIBILITY.md) names the commit. A consumer pinning `<5`
 accepts this wheel on the strength of a 4.x number and gets development-line
 behavior. Nothing in the version says so.
+
+Only the local segment changes between builds of one upstream line. Because a
+resolver ignores it, a new `+rs2.N` can never break an environment that already
+resolved against `4.8.0`. `.github/scripts/check_release_version.py` enforces
+that before a release is built: it derives the pin shapes from the version's own
+major number and fails the run if the version has lost its local segment or
+falls outside them.
 
 There is no PyPI release. The `dissect.cstruct` name there belongs to upstream,
 and a local version segment like `+rs2.1` cannot be uploaded to PyPI in any

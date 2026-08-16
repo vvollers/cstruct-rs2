@@ -1,0 +1,14 @@
+# Action versions and crate versions both decide what a release contains, so
+# both get watched. Cargo updates land in Cargo.lock, which the release build
+# consumes with `--locked`.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly

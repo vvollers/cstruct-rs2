@@ -1,0 +1,31 @@
+A Rust implementation of `dissect.cstruct`, built for `target-query` throughput.
+
+## Install
+
+```bash
+gh release download @TAG@ --repo @REPO@ --pattern '*.whl' --pattern 'SHA256SUMS'
+sha256sum --check --ignore-missing SHA256SUMS
+gh attestation verify dissect_cstruct-*.whl --repo @REPO@
+
+/path/to/dissect-env/bin/python -m pip install \
+  --force-reinstall --no-deps dissect_cstruct-*.whl
+```
+
+This wheel uses upstream's distribution name and replaces it in the environment.
+Install one implementation or the other, never both. `build_info()` reports which
+one is active.
+
+## Requirements
+
+- CPython 3.13
+- Linux x86-64-v3 or newer (AVX2, BMI2, FMA), checked at import
+- glibc 2.28 or newer (`manylinux_2_28`)
+
+## Dependency pins
+
+`@VERSION@` resolves as `@PUBLIC@`; the local `+rs2.N` segment is ignored by
+dependency solving. It satisfies `dissect.cstruct>=@MAJOR@,<@NEXT_MAJOR@` and
+`>=@MAJOR@.0.dev,<@NEXT_MAJOR@.0.dev`. See the README for the full table and for
+which upstream line this release tracks.
+
+Not affiliated with or endorsed by Fox-IT.
