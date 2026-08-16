@@ -1,0 +1,75 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "dissect.cstruct"
+description = "A Rust implementation of dissect.cstruct, built for target-query throughput"
+readme = "README.md"
+license = "MIT"
+dynamic = ["version"]
+
+# Release wheels use CPython 3.13's version-specific extension API. The optional
+# ABI-stable build is a comparison configuration, not the shipped artifact.
+requires-python = ">=3.13,<3.14"
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Rust",
+  "Operating System :: POSIX :: Linux",
+  "Topic :: Security",
+]
+
+# This is an independent reimplementation. The URLs point at it, not at the
+# upstream project whose distribution name it deliberately shares.
+[project.urls]
+Homepage = "https://github.com/vvollers/cstruct-rs2"
+Repository = "https://github.com/vvollers/cstruct-rs2"
+
+[project.optional-dependencies]
+# Runtime dependencies are empty; this is the development set.
+dev = ["ruff>=0.9"]
+
+[tool.maturin]
+manifest-path = "crates/cstruct-rs2-py/Cargo.toml"
+python-source = "python"
+module-name = "dissect.cstruct._cstruct_rs2"
+features = ["pyo3/extension-module"]
+# `.cargo/config.toml` and `rust-toolchain.toml` decide which machines the built
+# artifact runs on, so a source distribution that omits them builds something
+# different from the released wheel. The Markdown files are the compatibility
+# and benchmark record; they travel with the source that earned them.
+include = [
+  { path = ".cargo/config.toml", format = "sdist" },
+  { path = "rust-toolchain.toml", format = "sdist" },
+  { path = "LICENSE", format = "sdist" },
+  { path = "*.md", format = "sdist" },
+]
+exclude = [
+  { path = "**/__pycache__/**", format = "sdist" },
+  { path = "**/*.py[cod]", format = "sdist" },
+  { path = "**/.ruff_cache/**", format = "sdist" },
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.format]
+# Ruff reformats Python inside Markdown fences, and the docs here are prose that
+# happens to quote code. Their snippets align trailing comments into a column to
+# make a point ("this value, that value"), which the formatter collapses -- and a
+# snippet is illustration, not something anyone compiles. So the formatter owns
+# `.py` files and the docs stay as written. Linting still covers Markdown, so a
+# snippet that is outright wrong is still caught.
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+# The report tables are read by people, and `2.07×` is the right character for a
+# ratio. RUF001/002 exist to catch homoglyphs smuggled into identifiers, which
+# is not what a multiplication sign in a Markdown table is.
+ignore = ["RUF001", "RUF002"]

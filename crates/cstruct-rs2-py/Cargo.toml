@@ -1,0 +1,38 @@
+[package]
+name = "cstruct-rs2-py"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+rust-version.workspace = true
+description = "PyO3 bindings for cstruct-rs2: the Record and Type pyclasses."
+
+[lib]
+name = "_cstruct_rs2"
+crate-type = ["cdylib"]
+
+[dependencies]
+cstruct-rs2-core = { path = "../cstruct-rs2-core", version = "=4.8.0" }
+cstruct-rs2-simd = { path = "../cstruct-rs2-simd", version = "=4.8.0" }
+pyo3.workspace = true
+
+[build-dependencies]
+sha2 = "0.10"
+
+[features]
+# Not the default and not the release build. Version-specific wheels retain the
+# object-layout and vectorcall paths used by the record object; this feature
+# keeps the stable-ABI comparison reproducible.
+abi3 = ["pyo3/abi3-py313"]
+# Compile stage timers and counters into a dedicated measurement build. Ordinary
+# wheels do not contain these branches, locks, or clock reads.
+perf-telemetry = []
+
+[lints.rust]
+missing_docs = "warn"
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"

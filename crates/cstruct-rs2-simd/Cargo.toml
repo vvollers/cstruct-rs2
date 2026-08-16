@@ -1,0 +1,31 @@
+[package]
+name = "cstruct-rs2-simd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+rust-version.workspace = true
+description = "Vectorised bulk kernels for cstruct-rs2. Every kernel has a scalar twin and a differential test."
+
+[dependencies]
+
+[dev-dependencies]
+# Tests only, and for one reason: this crate and the core crate each describe
+# the build they were compiled for, and the descriptions have to agree or a
+# benchmark can be handed two accounts of what it measured. Not a runtime
+# dependency -- the kernels here must stay independent of the decoder.
+cstruct-rs2-core = { path = "../cstruct-rs2-core", version = "=4.8.0" }
+
+[lints.rust]
+# `unsafe` is permitted here and nowhere else in the decode path, because
+# `std::arch` intrinsics require it. That permission comes with conditions:
+# every kernel needs a scalar twin, a differential proptest across every vector-
+# width boundary, fuzzing, a documented safety invariant, and a measurement that
+# justifies its existence. A kernel without those does not ship.
+missing_docs = "warn"
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"

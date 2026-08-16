@@ -1,0 +1,41 @@
+[workspace]
+members = ["crates/cstruct-rs2-core", "crates/cstruct-rs2-simd", "crates/cstruct-rs2-py"]
+resolver = "2"
+exclude = ["spikes"]
+
+[workspace.package]
+version = "4.8.0+rs2.1"
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/vvollers/cstruct-rs2"
+homepage = "https://github.com/vvollers/cstruct-rs2"
+documentation = "https://github.com/vvollers/cstruct-rs2"
+rust-version = "1.97.1"
+
+[workspace.dependencies]
+pyo3 = { version = "0.29", features = ["extension-module"] }
+
+# Build configuration determines the executable contract. Every setting here is
+# deliberate:
+#
+#   lto = "fat"          whole-program inlining across the core/simd/py split,
+#                        which only matters because the hot path crosses crates
+#   codegen-units = 1    no parallel-codegen inlining barriers
+#   panic = "unwind"     MANDATORY. A panic must unwind to the PyO3 boundary and
+#                        become a Python exception. `abort` would turn a
+#                        malformed forensic image into a killed interpreter.
+#
+# `-C target-cpu` is set in .cargo/config.toml rather than here, because it is
+# the one setting that changes which machines the artifact runs on.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "unwind"
+debug = 1           # keep frame pointers and line tables for `perf`
+
+# The benchmark profile is release plus full debug info, so profiling a build
+# never means profiling different code than the one that ships.
+[profile.bench]
+inherits = "release"
+debug = 2

@@ -1,0 +1,25 @@
+[package]
+name = "cstruct-rs2-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+rust-version.workspace = true
+description = "Definition parser, schema IR, compiled plan and decoder for cstruct-rs2. No Python dependency."
+
+[dependencies]
+
+[dev-dependencies]
+
+[lints.rust]
+# The core crate is the part of the project that can be fuzzed and audited on
+# its own, and it stays that way. Every `unsafe` in this project lives in
+# cstruct-rs2-simd or cstruct-rs2-py, behind a documented invariant.
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"

@@ -1,0 +1,24 @@
+target/
+dist/
+*.so
+__pycache__/
+.venv/
+# An upstream dissect.cstruct install, kept as a read-only comparison reference
+# in its own interpreter. Rebuilt rather than committed so it always matches the
+# upstream commit it is being compared against.
+.venv-upstream/
+.pytest_cache/
+.ruff_cache/
+# Coverage output, which is per-run and local. `.profraw` files are dropped by
+# CPython itself when it exits an instrumented extension, so they land wherever
+# pytest was invoked from rather than in a directory this file can name.
+.coverage
+htmlcov/
+*.profraw
+
+# Generated build and measurement output. A curated summary is copied into a
+# report deliberately, after review; raw runs stay local.
+artifacts/
+spikes/*/target/
+
+.claude/

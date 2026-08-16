@@ -1,0 +1,14 @@
+# The one setting that decides which machines the build runs on.
+#
+# `x86-64-v3` is the floor: AVX2, BMI2, FMA, and the unaligned loads the decode
+# paths depend on. Nothing older is supported, ever.
+#
+# A benchmark build may raise that floor to `native` through RUSTFLAGS, so the
+# vector kernels can use whatever the measuring host has. Do not put `native`
+# here: it would make a wheel that only runs on the machine that happened to
+# build it, silently.
+[build]
+rustflags = ["-C", "target-cpu=x86-64-v3"]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "target-cpu=x86-64-v3"]

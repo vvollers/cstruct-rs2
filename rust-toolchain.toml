@@ -1,0 +1,8 @@
+# A fixed compiler keeps release code generation comparable across performance
+# checks. Stable Rust supplies the supported `std::arch` intrinsics; the project
+# does not require nightly-only language or library features.
+[toolchain]
+channel = "1.97.1"
+components = ["rustfmt", "clippy", "rust-src"]
+targets = ["x86_64-unknown-linux-gnu"]
+profile = "minimal"
