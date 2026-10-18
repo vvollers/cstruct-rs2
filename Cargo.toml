@@ -14,7 +14,7 @@ documentation = "https://github.com/vvollers/cstruct-rs2"
 rust-version = "1.97.1"
 
 [workspace.dependencies]
-pyo3 = { version = "0.29", features = ["extension-module"] }
+pyo3 = { version = "0.30", features = ["extension-module"] }
 
 # Build configuration determines the executable contract. Every setting here is
 # deliberate:
