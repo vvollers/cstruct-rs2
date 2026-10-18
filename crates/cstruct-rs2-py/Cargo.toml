@@ -20,7 +20,7 @@ cstruct-rs2-simd = { path = "../cstruct-rs2-simd", version = "=4.8.0" }
 pyo3.workspace = true
 
 [build-dependencies]
-sha2 = "0.10"
+sha2 = "0.11"
 
 [features]
 # Not the default and not the release build. Version-specific wheels retain the
